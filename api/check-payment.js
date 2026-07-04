@@ -3,7 +3,7 @@ module.exports = async (req, res) => {
   if (!id) return res.status(400).json({ error: 'id é obrigatório' });
 
   try {
-    const response = await fetch(`https://api.abacatepay.com/v1/billing/check?id=${id}`, {
+    const response = await fetch(`https://api.abacatepay.com/v1/pixQrCode/check?id=${id}`, {
       headers: {
         'Authorization': `Bearer ${process.env.ABACATE_API_KEY}`
       }
@@ -13,7 +13,6 @@ module.exports = async (req, res) => {
 
     if (!response.ok) return res.status(500).json({ error: 'Erro ao verificar pagamento' });
 
-    // status possíveis: PENDING, PAID, EXPIRED, CANCELLED
     res.status(200).json({ status: data.data.status });
   } catch (err) {
     console.error(err);
