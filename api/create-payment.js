@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          method: 'PIX',
+          method: "PIX",
           data: {
             amount: Math.round(price * 100),
             description: itemName,
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
 
     console.log(result);
 
-    if (!response.ok || !result.success) {
+    if (!response.ok || result.success !== true) {
       console.error(result);
       return res.status(500).json(result);
     }
