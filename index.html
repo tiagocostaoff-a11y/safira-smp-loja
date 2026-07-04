@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safira SMP — Loja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #070b1a;
+    --bg-alt: #0c1330;
+    --panel: #0f1838;
+    --sapphire-deep: #0a2e6e;
+    --sapphire: #1e5fbf;
+    --sapphire-light: #5ec9ff;
+    --ice: #d7ecff;
+    --text: #eaf2ff;
+    --text-muted: #8ea1c9;
+    --line: rgba(94,201,255,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{ font-family:'Unbounded', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+
+  /* faceted cut used across cards/buttons — the signature device */
+  .facet{
+    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+  }
+  .facet-sm{
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+
+  /* background ambience */
+  .bg-glow{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(60% 40% at 15% 0%, rgba(30,95,191,0.25), transparent 60%),
+      radial-gradient(50% 35% at 100% 30%, rgba(94,201,255,0.12), transparent 60%);
+  }
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(7,11,26,0.82);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; max-width:1180px; margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:0.02em; font-size:1.05rem; }
+  .logo svg{ width:26px; height:26px; }
+  .navlinks{ display:flex; gap:32px; }
+  .navlinks a{
+    font-size:0.92rem; color:var(--text-muted); position:relative; transition:color .2s;
+  }
+  .navlinks a:hover{ color:var(--ice); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 22px; font-weight:600; font-size:0.88rem;
+    cursor:pointer; border:none; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn:focus-visible{ outline:2px solid var(--sapphire-light); outline-offset:3px; }
+  .btn-primary{ background:linear-gradient(135deg, var(--sapphire-light), var(--sapphire)); color:#04101f; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(30,95,191,0.35); }
+  .btn-ghost{ background:transparent; color:var(--ice); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color:var(--sapphire-light); color:var(--sapphire-light); }
+
+  /* HERO */
+  .hero{
+    position:relative; z-index:1;
+    padding:100px 32px 80px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+    max-width:1180px; margin:0 auto;
+  }
+  .eyebrow{
+    display:inline-block; font-family:'JetBrains Mono', monospace; font-size:0.75rem;
+    color:var(--sapphire-light); letter-spacing:0.14em; margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(2.3rem, 4.6vw, 3.6rem); line-height:1.06; font-weight:700;
+    margin-bottom:22px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--sapphire-light); }
+  .hero p{ color:var(--text-muted); max-width:46ch; margin-bottom:30px; font-size:1.02rem; }
+  .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .hero-note{ font-size:0.8rem; color:var(--text-muted); }
+  .hero-note a{ color:var(--sapphire-light); border-bottom:1px solid rgba(94,201,255,0.35); }
+
+  .gem-stage{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .gem-stage svg{ width:100%; max-width:420px; animation: floaty 6s ease-in-out infinite; filter: drop-shadow(0 30px 60px rgba(30,95,191,0.35)); }
+  @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(0deg);} 50%{ transform:translateY(-14px) rotate(2deg);} }
+  .shine{ animation: sweep 3.2s ease-in-out infinite; }
+  @keyframes sweep{ 0%,100%{ opacity:0.15; } 50%{ opacity:0.65; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .gem-stage svg, .shine{ animation:none !important; }
+  }
+
+  /* SECTIONS */
+  section{ position:relative; z-index:1; padding:70px 32px; }
+  .section-head{ max-width:640px; margin-bottom:44px; }
+  .section-head .eyebrow{ margin-bottom:12px; }
+  .section-head h2{ font-size:clamp(1.6rem, 3vw, 2.2rem); margin-bottom:12px; }
+  .section-head p{ color:var(--text-muted); }
+
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+
+  .card{
+    background:linear-gradient(160deg, var(--panel), var(--bg-alt));
+    border:1px solid var(--line);
+    padding:30px 26px;
+    position:relative;
+    transition:transform .22s ease, border-color .22s ease;
+  }
+  .card:hover{ transform:translateY(-6px); border-color:rgba(94,201,255,0.4); }
+
+  .badge{
+    position:absolute; top:-1px; right:18px;
+    background:var(--sapphire-light); color:#04101f;
+    font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:700;
+    padding:5px 12px; letter-spacing:0.05em;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 92% 100%, 8% 100%, 0 70%);
+  }
+
+  .plan-name{ font-family:'Unbounded'; font-size:1.15rem; margin-bottom:6px; }
+  .plan-tagline{ color:var(--sapphire-light); font-size:0.82rem; margin-bottom:18px; }
+  .plan-price{ font-family:'JetBrains Mono'; font-size:1.9rem; font-weight:700; margin-bottom:4px; }
+  .plan-price span{ font-size:0.85rem; color:var(--text-muted); font-weight:400; }
+  .plan-period{ color:var(--text-muted); font-size:0.8rem; margin-bottom:22px; }
+  .feature-list{ list-style:none; margin-bottom:26px; }
+  .feature-list li{
+    display:flex; gap:10px; align-items:flex-start; font-size:0.9rem; color:var(--ice);
+    padding:7px 0; border-top:1px solid var(--line);
+  }
+  .feature-list li:first-child{ border-top:none; }
+  .feature-list svg{ flex-shrink:0; margin-top:3px; width:14px; height:14px; color:var(--sapphire-light); }
+  .card .btn{ width:100%; justify-content:center; }
+
+  .item-icon{
+    width:52px; height:52px; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 30%, var(--sapphire-light), var(--sapphire-deep));
+    margin-bottom:18px; color:#04101f;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .item-icon svg{ width:26px; height:26px; }
+
+  .tool-image{
+    width:100%; aspect-ratio:1/1; object-fit:cover; display:block;
+    margin-bottom:18px; background:#000;
+  }
+
+  .tool-name{ font-family:'Unbounded'; font-size:1.02rem; margin-bottom:8px; }
+  .tool-desc{ color:var(--text-muted); font-size:0.88rem; margin-bottom:18px; min-height:64px; }
+  .tool-price{ font-family:'JetBrains Mono'; font-weight:700; font-size:1.15rem; margin-bottom:16px; }
+
+  .gem-pack{ text-align:center; }
+  .gem-pack .item-icon{ margin:0 auto 18px; }
+  .gem-amount{ font-family:'Unbounded'; font-size:1.4rem; margin-bottom:4px; }
+  .gem-bonus{ color:var(--sapphire-light); font-size:0.78rem; font-family:'JetBrains Mono'; margin-bottom:16px; }
+  .gem-price{ font-family:'JetBrains Mono'; font-weight:700; font-size:1.2rem; margin-bottom:18px; }
+
+  .alt-bg{ background:var(--bg-alt); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  footer{ position:relative; z-index:1; padding:60px 32px 30px; border-top:1px solid var(--line); }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:30px; margin-bottom:40px; }
+  .footer-brand p{ color:var(--text-muted); font-size:0.88rem; margin-top:14px; max-width:32ch; }
+  .footer-col h4{ font-family:'Unbounded'; font-size:0.85rem; margin-bottom:16px; letter-spacing:0.02em; }
+  .footer-col a{ display:block; color:var(--text-muted); font-size:0.86rem; padding:6px 0; transition:color .2s; }
+  .footer-col a:hover{ color:var(--sapphire-light); }
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    padding-top:24px; border-top:1px solid var(--line); font-size:0.8rem; color:var(--text-muted);
+  }
+  .socials{ display:flex; gap:14px; }
+  .socials a{ width:34px; height:34px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); }
+  .socials a:hover{ border-color:var(--sapphire-light); color:var(--sapphire-light); }
+
+  @media (max-width: 1080px){
+    .grid4{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 880px){
+    .hero{ grid-template-columns:1fr; padding-top:60px; }
+    .gem-stage{ order:-1; max-width:280px; margin:0 auto; }
+    .grid3{ grid-template-columns:1fr; }
+    .grid4{ grid-template-columns:1fr; }
+    .footer-grid{ grid-template-columns:1fr 1fr; }
+    .navlinks{ display:none; }
+  }
+
+  /* CHECKOUT OVERLAY */
+  .checkout-overlay{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(4,7,17,0.86); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .checkout-overlay[hidden]{ display:none; }
+
+  .loading-screen{ display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .spinner{
+    width:46px; height:46px; border-radius:50%;
+    border:3px solid rgba(94,201,255,0.2); border-top-color:var(--sapphire-light);
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+  .loading-screen p{ color:var(--text-muted); font-size:0.9rem; }
+
+  .pix-modal{
+    width:100%; max-width:300px;
+    background:var(--panel); border:1px solid var(--line);
+    padding:22px 20px 20px;
+  }
+  .pix-modal[hidden]{ display:none; }
+  .pix-title{ font-family:'Unbounded'; font-size:1rem; text-align:center; margin-bottom:5px; }
+  .pix-sub{ text-align:center; color:var(--text-muted); font-size:0.78rem; margin-bottom:16px; }
+  .pix-item{ text-align:center; font-size:0.8rem; color:var(--sapphire-light); margin-bottom:2px; }
+  .pix-amount{ text-align:center; font-family:'JetBrains Mono'; font-weight:700; font-size:1.5rem; color:var(--sapphire-light); margin-bottom:18px; }
+
+  .qr-box{
+    width:150px; height:150px; margin:0 auto 18px; background:#fff; padding:9px;
+  }
+  .qr-box svg{ width:100%; height:100%; display:block; }
+
+  .pix-key-label{ font-size:0.7rem; color:var(--text-muted); letter-spacing:0.08em; margin-bottom:6px; }
+  .pix-key-row{ display:flex; gap:8px; align-items:stretch; margin-bottom:20px; }
+  .pix-key-box{
+    flex:1; background:var(--bg); border:1px solid var(--line);
+    font-family:'JetBrains Mono'; font-size:0.68rem; color:var(--ice);
+    padding:10px; word-break:break-all; line-height:1.4; max-height:74px; overflow:hidden;
+  }
+  .copy-btn{
+    flex-shrink:0; background:transparent; border:1px solid var(--sapphire-light); color:var(--sapphire-light);
+    font-size:0.78rem; font-weight:600; padding:0 14px; cursor:pointer; white-space:nowrap;
+  }
+  .copy-btn:hover{ background:rgba(94,201,255,0.12); }
+
+  .pix-steps{
+    background:var(--bg-alt); border:1px solid var(--line); padding:14px 16px; margin-bottom:20px;
+  }
+  .pix-steps p{ font-size:0.82rem; font-weight:600; margin-bottom:8px; }
+  .pix-steps ol{ list-style:none; counter-reset:step; }
+  .pix-steps li{ counter-increment:step; font-size:0.8rem; color:var(--text-muted); padding:3px 0; }
+  .pix-steps li::before{ content:counter(step) ". "; color:var(--sapphire-light); font-weight:600; }
+  .pix-steps b{ color:var(--ice); }
+
+  .pix-paid-btn{
+    width:100%; background:#2fce7a; color:#04140b; font-weight:700; border:none;
+    padding:13px; font-size:0.92rem; cursor:pointer; margin-bottom:10px;
+  }
+  .pix-paid-btn:hover{ filter:brightness(1.08); }
+  .pix-close-btn{
+    width:100%; background:transparent; color:var(--text-muted); border:1px solid var(--line);
+    padding:11px; font-size:0.85rem; cursor:pointer;
+  }
+  .pix-close-btn:hover{ color:var(--ice); border-color:var(--sapphire-light); }
+
+  /* SUCCESS MODAL */
+  .success-modal{
+    width:100%; max-width:300px;
+    background:var(--panel); border:1px solid var(--line);
+    padding:26px 22px 20px; text-align:center;
+  }
+  .success-modal[hidden]{ display:none; }
+  .success-emoji{ font-size:2.2rem; margin-bottom:10px; }
+  .success-title{ font-family:'Unbounded'; font-size:1.05rem; margin-bottom:4px; }
+  .success-sub{ color:var(--text-muted); font-size:0.82rem; margin-bottom:18px; }
+  .success-steps{
+    background:var(--bg-alt); border:1px solid var(--line); padding:14px 16px; margin-bottom:16px;
+    text-align:left;
+  }
+  .success-steps ol{ list-style:none; counter-reset:step2; }
+  .success-steps li{ counter-increment:step2; font-size:0.82rem; color:var(--text-muted); padding:5px 0; }
+  .success-steps li::before{ content:counter(step2) ". "; color:var(--sapphire-light); font-weight:600; }
+  .success-steps b{ color:var(--ice); }
+  .success-note{ color:#2fce7a; font-size:0.85rem; font-weight:600; margin-bottom:18px; }
+  .discord-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(135deg, var(--sapphire-light), var(--sapphire));
+    color:#04101f; font-weight:700; border:none; padding:13px; font-size:0.9rem;
+    cursor:pointer; margin-bottom:10px; text-decoration:none;
+  }
+  .discord-btn:hover{ filter:brightness(1.08); }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L21 9 L17 22 L7 22 L3 9 Z" fill="url(#lg)"/><defs><linearGradient id="lg" x1="3" y1="2" x2="21" y2="22"><stop offset="0" stop-color="#5ec9ff"/><stop offset="1" stop-color="#0a2e6e"/></linearGradient></defs></svg>
+      SAFIRA SMP
+    </div>
+    <div class="navlinks">
+      <a href="#inicio">Início</a>
+      <a href="#vips">VIPs</a>
+      <a href="#ferramentas">Ferramentas</a>
+      <a href="#shards">Shards</a>
+      <a href="#equipe">Equipe</a>
+    </div>
+    <a href="https://discord.gg/HEYzq3M9kN" target="_blank" rel="noopener" class="btn btn-ghost facet-sm">Discord</a>
+  </nav>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">SAFIRA SMP · TEMPORADA 3</span>
+      <h1>Cada <em>faceta</em> é uma vantagem.</h1>
+      <p>Safira SMP não é só mais um servidor — é uma pedra lapidada por quem joga nela. Escolha seu corte, evolua sua base e brilhe no ranking.</p>
+      <div class="hero-cta">
+        <a href="#vips" class="btn btn-primary facet">Ver planos VIP</a>
+        <a href="https://discord.gg/HEYzq3M9kN" target="_blank" rel="noopener" class="btn btn-ghost facet">Entrar no Discord</a>
+      </div>
+      <p class="hero-note">Ao comprar você concorda com nossos <a href="#">Termos de Uso</a>.</p>
+    </div>
+    <div class="gem-stage">
+      <svg viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="f1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ec9ff"/><stop offset="1" stop-color="#1e5fbf"/></linearGradient>
+          <linearGradient id="f2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e5fbf"/><stop offset="1" stop-color="#0a2e6e"/></linearGradient>
+          <linearGradient id="f3" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0a2e6e"/><stop offset="1" stop-color="#5ec9ff"/></linearGradient>
+        </defs>
+        <polygon points="150,10 230,70 150,110 70,70" fill="url(#f1)"/>
+        <polygon points="70,70 150,110 130,180 40,140" fill="url(#f2)"/>
+        <polygon points="230,70 260,140 170,180 150,110" fill="url(#f3)"/>
+        <polygon points="40,140 130,180 150,300 90,210" fill="url(#f2)"/>
+        <polygon points="130,180 170,180 210,210 150,300" fill="url(#f1)"/>
+        <polygon points="170,180 260,140 210,210" fill="url(#f3)"/>
+        <polygon points="150,10 70,70 40,140 230,70" fill="#5ec9ff" opacity="0.06" class="shine"/>
+      </svg>
+    </div>
+  </section>
+
+  <section id="vips">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">PLANOS</span>
+        <h2>Planos VIP</h2>
+        <p>Corte, polimento e brilho — quatro formas de lapidar sua experiência dentro do servidor.</p>
+      </div>
+      <div class="grid4">
+
+        <div class="card facet">
+          <div class="plan-name">VIP</div>
+          <div class="plan-price">R$ 7<span>,50</span></div>
+          <div class="plan-period">pagamento único</div>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Tag exclusiva no chat</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>2 homes adicionais</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Kit inicial de ferramentas</li>
+          </ul>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <span class="badge">MAIS ESCOLHIDO</span>
+          <div class="plan-name">PRIME</div>
+          <div class="plan-price">R$ 16<span>,99</span></div>
+          <div class="plan-period">pagamento único</div>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Tudo do VIP</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>5 homes adicionais</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Kit exclusivo</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>+15% de shards em compras</li>
+          </ul>
+          <a href="#" class="btn btn-primary facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <div class="plan-name">CRIMSON</div>
+          <div class="plan-price">R$ 25<span>,90</span></div>
+          <div class="plan-period">pagamento único</div>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Tudo do PRIME</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>8 homes adicionais</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Kit exclusivo</li>
+          </ul>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <div class="plan-name">AMETHYST</div>
+          <div class="plan-price">R$ 45<span>,90</span></div>
+          <div class="plan-period">pagamento único</div>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Tudo do CRIMSON</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>10 homes adicionais</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Chave lendária mensal grátis</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"/></svg>Kit exclusivo</li>
+          </ul>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="ferramentas" class="alt-bg">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">EQUIPAMENTOS</span>
+        <h2>Ferramentas Lapidadas</h2>
+        <p>Itens com poderes especiais, forjados para agilizar sua jornada dentro do Safira SMP.</p>
+      </div>
+      <div class="grid3">
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="picareta-3x3.png" alt="Picareta 3x3">
+          <div class="tool-name">Picareta 3x3</div>
+          <div class="tool-desc">Quebra blocos em área 3x3 e envia os itens direto para o seu inventário.</div>
+          <div class="tool-price">R$ 19,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="machado-lenhador.png" alt="Machado Lenhador">
+          <div class="tool-name">Machado Lenhador</div>
+          <div class="tool-desc">Derruba a árvore inteira de um só golpe. Durabilidade infinita.</div>
+          <div class="tool-price">R$ 17,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="pa-3x3.png" alt="Pá 3x3">
+          <div class="tool-name">Pá 3x3</div>
+          <div class="tool-desc">Cava terra, areia e cascalho em área 3x3 num só golpe.</div>
+          <div class="tool-price">R$ 14,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="chaves">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">BAÚS</span>
+        <h2>Chaves de Baús</h2>
+        <p>Abra baús espalhados pelo mundo e desbloqueie recompensas raras.</p>
+      </div>
+      <div class="grid4">
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="chave-spawner.png" alt="Chave Spawner">
+          <div class="tool-name">Chave Spawner</div>
+          <div class="tool-desc">Abre o Baú Spawner, com spawners e blocos raros para sua base.</div>
+          <div class="tool-price">R$ 8,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="chave-prime.png" alt="Chave Prime">
+          <div class="tool-name">Chave Prime</div>
+          <div class="tool-desc">Abre o Baú Prime, com kits e itens encantados de qualidade.</div>
+          <div class="tool-price">R$ 14,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="chave-crimson.png" alt="Chave Crimson">
+          <div class="tool-name">Chave Crimson</div>
+          <div class="tool-desc">Abre o Baú Crimson, com equipamentos raros e blocos do Nether.</div>
+          <div class="tool-price">R$ 19,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet">
+          <img class="tool-image facet-sm" src="chave-amethyst.png" alt="Chave Amethyst">
+          <div class="tool-name">Chave Amethyst</div>
+          <div class="tool-desc">Abre o Baú Amethyst, com itens exclusivos e cosméticos únicos do servidor.</div>
+          <div class="tool-price">R$ 29,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="shards" class="alt-bg">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">MOEDA</span>
+        <h2>Shards</h2>
+        <p>A moeda premium do Safira SMP. Use para comprar itens no /warp shop e nos eventos.</p>
+      </div>
+      <div class="grid3">
+
+        <div class="card facet gem-pack">
+          <img class="tool-image facet-sm" src="shards-1000.png" alt="1.000 Shards">
+          <div class="gem-amount">1.000 Shards</div>
+          <div class="gem-bonus">SEM BÔNUS</div>
+          <div class="gem-price">R$ 9,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet gem-pack">
+          <img class="tool-image facet-sm" src="shards-2300.png" alt="2.300 Shards">
+          <div class="gem-amount">2.300 Shards</div>
+          <div class="gem-bonus">+10% BÔNUS</div>
+          <div class="gem-price">R$ 19,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+        <div class="card facet gem-pack">
+          <img class="tool-image facet-sm" src="shards-6000.png" alt="6.000 Shards">
+          <div class="gem-amount">6.000 Shards</div>
+          <div class="gem-bonus">+25% BÔNUS</div>
+          <div class="gem-price">R$ 39,90</div>
+          <a href="#" class="btn btn-ghost facet-sm">Comprar</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L21 9 L17 22 L7 22 L3 9 Z" fill="url(#lg2)"/><defs><linearGradient id="lg2" x1="3" y1="2" x2="21" y2="22"><stop offset="0" stop-color="#5ec9ff"/><stop offset="1" stop-color="#0a2e6e"/></linearGradient></defs></svg>
+          SAFIRA SMP
+        </div>
+        <p>Um servidor de Minecraft feito para durar — construído, lapidado e defendido pela sua comunidade.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Loja</h4>
+        <a href="#vips">VIPs</a>
+        <a href="#ferramentas">Ferramentas</a>
+        <a href="#chaves">Chaves</a>
+        <a href="#shards">Shards</a>
+      </div>
+      <div class="footer-col">
+        <h4>Comunidade</h4>
+        <a href="https://discord.gg/HEYzq3M9kN" target="_blank" rel="noopener">Discord</a>
+        <a href="#">Instagram</a>
+        <a href="#">Wiki</a>
+      </div>
+      <div class="footer-col">
+        <h4>Suporte</h4>
+        <a href="#">Termos de Uso</a>
+        <a href="#">Política de Reembolso</a>
+        <a href="#">Fale Conosco</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Safira SMP. Não afiliado à Mojang ou Microsoft.</span>
+      <div class="socials">
+        <a href="https://discord.gg/HEYzq3M9kN" target="_blank" rel="noopener" aria-label="Discord"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6.5a17 17 0 00-4.2-1.3l-.2.4a15 15 0 014 1.5 16 16 0 00-15.2 0 15 15 0 014-1.5l-.2-.4A17 17 0 004 6.5C1.8 10 1.2 13.4 1.4 16.7A17 17 0 006.6 19l.8-1.3a11 11 0 01-1.7-.8l.4-.3a12 12 0 0012 0l.4.3a11 11 0 01-1.7.8l.8 1.3a17 17 0 005.2-2.3c.3-3.9-.6-7.3-2.8-10.4zM8.7 14.9c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm6.6 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="checkout-overlay" id="checkoutOverlay" hidden>
+
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner"></div>
+    <p>Gerando pagamento...</p>
+  </div>
+
+  <div class="pix-modal" id="pixModal" hidden>
+    <div class="pix-title">Pagamento via Pix</div>
+    <div class="pix-sub">Escaneie o QR Code ou copie a chave</div>
+    <div class="pix-item" id="pixItem">Item</div>
+    <div class="pix-amount" id="pixAmount">R$ 0,00</div>
+
+    <div class="qr-box">
+      <img id="qrImage" src="" alt="QR Code Pix" style="width:100%;height:100%;object-fit:contain;">
+    </div>
+
+    <div class="pix-key-label">CHAVE PIX (COPIA E COLA)</div>
+    <div class="pix-key-row">
+      <div class="pix-key-box" id="pixKey">Gerando...</div>
+      <button class="copy-btn" id="copyPixBtn">Copiar</button>
+    </div>
+    <div id="pixStatusMsg" style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin:-10px 0 16px;">Aguardando pagamento...</div>
+
+    <div class="pix-steps">
+      <p>Como pagar:</p>
+      <ol>
+        <li>Abra o app do seu banco</li>
+        <li>Vá em <b>Pix → Pagar</b></li>
+        <li>Escaneie o QR Code ou cole a chave</li>
+        <li>Confirme o valor de <b id="pixStepsAmount">R$ 0,00</b></li>
+        <li>Após pagar, clique em "Já Paguei!"</li>
+      </ol>
+    </div>
+
+    <button class="pix-close-btn" id="pixCloseBtn">✕ Fechar</button>
+  </div>
+
+  <div class="success-modal" id="successModal" hidden>
+    <div class="success-emoji">🎉</div>
+    <div class="success-title">Pagamento enviado!</div>
+    <div class="success-sub">Agora é só buscar seu cargo</div>
+    <div class="success-steps">
+      <ol>
+        <li>Entre no nosso <b>Discord</b></li>
+        <li>Abra um <b>ticket de suporte</b></li>
+        <li>Envie o <b>comprovante</b> e peça seu cargo!</li>
+        <li>Não abra o ticket sem ter pago, senão é ban!</li>
+      </ol>
+    </div>
+    <div class="success-note">Seu cargo será liberado em breve ✅</div>
+    <a href="https://discord.gg/HEYzq3M9kN" target="_blank" rel="noopener" class="discord-btn">🎮 Entrar no Discord</a>
+    <button class="pix-close-btn" id="successCloseBtn">✕ Fechar</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const overlay = document.getElementById('checkoutOverlay');
+  const loading = document.getElementById('loadingScreen');
+  const modal = document.getElementById('pixModal');
+  const successModal = document.getElementById('successModal');
+  const pixItem = document.getElementById('pixItem');
+  const pixAmount = document.getElementById('pixAmount');
+  const pixStepsAmount = document.getElementById('pixStepsAmount');
+  const pixKey = document.getElementById('pixKey');
+  const qrImage = document.getElementById('qrImage');
+  const pixStatusMsg = document.getElementById('pixStatusMsg');
+  const copyBtn = document.getElementById('copyPixBtn');
+
+  let pollTimer = null;
+
+  function closeModal(){
+    overlay.setAttribute('hidden', '');
+    modal.setAttribute('hidden', '');
+    successModal.setAttribute('hidden', '');
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function startPolling(paymentId){
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(async function(){
+      try {
+        const r = await fetch('/api/check-payment?id=' + paymentId);
+        const data = await r.json();
+        if (data.status === 'PAID'){
+          clearInterval(pollTimer);
+          pollTimer = null;
+          modal.setAttribute('hidden', '');
+          successModal.removeAttribute('hidden');
+        } else if (data.status === 'EXPIRED' || data.status === 'CANCELLED'){
+          clearInterval(pollTimer);
+          pollTimer = null;
+          pixStatusMsg.textContent = 'Pagamento expirado ou cancelado. Tente novamente.';
+          pixStatusMsg.style.color = '#ff6b6b';
+        }
+      } catch(err){
+        console.error('Erro ao verificar pagamento', err);
+      }
+    }, 3000); // verifica a cada 3 segundos
+  }
+
+  document.querySelectorAll('.card .btn').forEach(function(btn){
+    btn.addEventListener('click', async function(e){
+      e.preventDefault();
+      const card = btn.closest('.card');
+      const name = card.querySelector('.plan-name, .tool-name, .gem-amount');
+      const priceEl = card.querySelector('.plan-price, .tool-price, .gem-price');
+      const itemName = name ? name.textContent.trim() : 'Item';
+      const itemPriceText = priceEl ? priceEl.textContent.replace(/\s+/g,' ').trim() : 'R$ 0,00';
+      // extrai só o número, ex: "R$ 16,99" -> 16.99
+      const numericPrice = parseFloat(
+        itemPriceText.replace('R$', '').trim().replace('.', '').replace(',', '.')
+      );
+
+      pixItem.textContent = itemName;
+      pixAmount.textContent = itemPriceText;
+      pixStepsAmount.textContent = itemPriceText;
+      pixStatusMsg.textContent = 'Aguardando pagamento...';
+      pixStatusMsg.style.color = '';
+
+      overlay.removeAttribute('hidden');
+      loading.removeAttribute('hidden');
+      modal.setAttribute('hidden', '');
+      successModal.setAttribute('hidden', '');
+
+      try {
+        const res = await fetch('/api/create-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemName: itemName, price: numericPrice })
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Falha ao gerar pagamento');
+
+        qrImage.src = 'data:image/png;base64,' + data.pixQrCode;
+        pixKey.textContent = data.pixCopyPaste;
+
+        loading.setAttribute('hidden', '');
+        modal.removeAttribute('hidden');
+
+        startPolling(data.billingId);
+      } catch (err) {
+        console.error(err);
+        loading.setAttribute('hidden', '');
+        pixStatusMsg.textContent = 'Erro ao gerar o Pix. Tente novamente.';
+        pixStatusMsg.style.color = '#ff6b6b';
+        modal.removeAttribute('hidden');
+      }
+    });
+  });
+
+  copyBtn.addEventListener('click', function(){
+    navigator.clipboard.writeText(pixKey.textContent.trim()).then(function(){
+      copyBtn.textContent = 'Copiado!';
+      setTimeout(function(){ copyBtn.textContent = 'Copiar'; }, 1500);
+    });
+  });
+
+  document.getElementById('pixCloseBtn').addEventListener('click', closeModal);
+  document.getElementById('successCloseBtn').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay){ closeModal(); }
+  });
+})();
+</script>
+
+</body>
+</html>
