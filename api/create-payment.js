@@ -5,41 +5,30 @@ module.exports = async (req, res) => {
   if (!itemName || !price) return res.status(400).json({ error: 'itemName e price são obrigatórios' });
 
   try {
-    const response = await fetch('https://api.abacatepay.com/v1/billing/create', {
+    const response = await fetch('https://api.abacatepay.com/v1/pixQrCode/create', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.ABACATE_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        frequency: 'ONE_TIME',
-        methods: ['PIX'],
-        products: [
-          {
-            externalId: itemName.toLowerCase().replace(/\s+/g, '-'),
-            name: itemName,
-            description: itemName,
-            quantity: 1,
-            price: Math.round(price * 100) // AbacatePay usa centavos
-          }
-        ],
-        returnUrl: process.env.SITE_URL || 'https://seusite.vercel.app',
-        completionUrl: process.env.SITE_URL || 'https://seusite.vercel.app'
+        amount: Math.round(price * 100),
+        expiresIn: 3600,
+        description: itemName
       })
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      console.error('AbacatePay erro:', data);
+    if (!response.ok || data.error) {
+      console.error('AbacatePay erro:', JSON.stringify(data));
       return res.status(500).json({ error: data.error || 'Erro ao gerar pagamento' });
     }
 
-    // AbacatePay retorna o link de pagamento e o id da cobrança
     res.status(200).json({
       billingId: data.data.id,
-      pixQrCode: data.data.pixQrCode,       // base64 do QR
-      pixCopyPaste: data.data.pixCopyPaste  // copia-e-cola
+      pixQrCode: data.data.brCodeBase64,
+      pixCopyPaste: data.data.brCode
     });
   } catch (err) {
     console.error(err);
