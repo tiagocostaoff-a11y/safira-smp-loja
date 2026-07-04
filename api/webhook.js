@@ -2,9 +2,8 @@ module.exports = async (req, res) => {
   try {
     const { event, data } = req.body;
 
-    // AbacatePay envia event: "billing.paid" quando o Pix é confirmado
-    if (event === 'billing.paid' && data && process.env.DISCORD_WEBHOOK_URL) {
-      const billing = data.billing;
+    if (event === 'checkout.completed' && data && process.env.DISCORD_WEBHOOK_URL) {
+      const billing = data.billing || data;
       const product = billing.products && billing.products[0];
       const amount = ((billing.amount || 0) / 100).toFixed(2).replace('.', ',');
 
