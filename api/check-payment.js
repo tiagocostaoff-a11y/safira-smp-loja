@@ -1,21 +1,37 @@
 module.exports = async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'id é obrigatório' });
+
+  if (!id) {
+    return res.status(400).json({
+      error: 'ID obrigatório'
+    });
+  }
 
   try {
-    const response = await fetch(`https://api.abacatepay.com/v1/pixQrCode/check?id=${id}`, {
-      headers: {
-        'Authorization': `Bearer ${process.env.ABACATE_API_KEY}`
+    const response = await fetch(
+      `https://api.abacatepay.com/v2/transparents/check?id=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.ABACATE_API_KEY}`
+        }
       }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      return res.status(500).json(result);
+    }
+
+    return res.status(200).json({
+      status: result.data.status
     });
 
-    const data = await response.json();
-
-    if (!response.ok) return res.status(500).json({ error: 'Erro ao verificar pagamento' });
-
-    res.status(200).json({ status: data.data.status });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro interno' });
+
+    return res.status(500).json({
+      error: err.message
+    });
   }
 };
