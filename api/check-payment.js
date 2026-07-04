@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
     const response = await fetch(
       `https://api.abacatepay.com/v2/transparents/check?id=${id}`,
       {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${process.env.ABACATE_API_KEY}`
         }
@@ -19,7 +20,7 @@ module.exports = async (req, res) => {
 
     const result = await response.json();
 
-    if (!response.ok || !result.success) {
+    if (!response.ok || result.success !== true) {
       return res.status(500).json(result);
     }
 
